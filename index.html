@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
+  <title>Bhumi's Review | Yash OP</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #080808;
+      --card: #111111;
+      --white: #f7f7f7;
+      --muted: #a5a5a5;
+      --pink: #ff8fb3;
+      --pink-light: #ffc0d4;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      width: 380px;
+      height: 380px;
+      top: -180px;
+      right: -160px;
+      background: rgba(255, 143, 179, 0.07);
+      filter: blur(100px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 320px;
+      height: 320px;
+      bottom: -180px;
+      left: -140px;
+      background: rgba(255, 143, 179, 0.05);
+      filter: blur(100px);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 620px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .screen {
+      display: none;
+      animation: fadeUp 0.65s ease both;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      background: rgba(17, 17, 17, 0.94);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 48px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--pink);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--pink);
+    }
+
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      line-height: 1.12;
+    }
+
+    h1 {
+      font-size: clamp(42px, 8vw, 66px);
+      letter-spacing: -1.8px;
+      margin-bottom: 10px;
+    }
+
+    h1 span {
+      color: var(--pink);
+    }
+
+    .formal {
+      color: var(--muted);
+      font-size: 14px;
+      font-style: italic;
+      margin-bottom: 28px;
+    }
+
+    .description {
+      color: #c5c5c5;
+      font-size: 16px;
+      line-height: 1.8;
+      max-width: 440px;
+      margin-bottom: 34px;
+    }
+
+    .host {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      margin-top: 30px;
+    }
+
+    .host strong {
+      color: var(--pink-light);
+      font-weight: 600;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 0 25px;
+      background: var(--pink);
+      color: #171014;
+      border: 0;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .button:hover {
+      background: var(--pink-light);
+      transform: translateY(-2px);
+    }
+
+    .button:active {
+      transform: scale(0.98);
+    }
+
+    .button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+      transform: none;
+    }
+
+    .button .arrow {
+      font-size: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .button:hover .arrow {
+      transform: translateX(4px);
+    }
+
+    .review-header {
+      margin-bottom: 32px;
+    }
+
+    .review-header h2 {
+      font-size: clamp(30px, 6vw, 43px);
+      margin-bottom: 14px;
+    }
+
+    .review-header p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e6e6e6;
+      margin-bottom: 14px;
+    }
+
+    .rating-section {
+      margin-bottom: 32px;
+    }
+
+    .stars {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .star {
+      border: 0;
+      background: transparent;
+      color: #424242;
+      font-size: clamp(35px, 8vw, 45px);
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      transition: color 0.18s ease, transform 0.18s ease;
+    }
+
+    .star:hover {
+      transform: scale(1.15);
+    }
+
+    .star.selected {
+      color: var(--pink);
+    }
+
+    .rating-text {
+      min-height: 20px;
+      font-size: 13px;
+      color: var(--pink-light);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 145px;
+      resize: vertical;
+      background: #0b0b0b;
+      color: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.7;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    textarea::placeholder {
+      color: #666;
+    }
+
+    textarea:focus {
+      border-color: rgba(255, 143, 179, 0.65);
+    }
+
+    .feedback-section {
+      margin-bottom: 26px;
+    }
+
+    .form-note {
+      color: #777;
+      font-size: 12px;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .error-message {
+      display: none;
+      color: #ff8b8b;
+      font-size: 13px;
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+
+    .error-message.visible {
+      display: block;
+    }
+
+    .review-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .back-button {
+      background: transparent;
+      color: var(--muted);
+      border: 0;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 12px 0;
+      transition: color 0.2s ease;
+    }
+
+    .back-button:hover {
+      color: var(--white);
+    }
+
+    .success-icon {
+      width: 58px;
+      height: 58px;
+      border: 1px solid rgba(255, 143, 179, 0.5);
+      background: rgba(255, 143, 179, 0.08);
+      color: var(--pink);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      margin-bottom: 28px;
+      animation: popIn 0.55s ease both;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.65);
+      }
+      75% {
+        transform: scale(1.08);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .thankyou h2 {
+      font-size: clamp(35px, 7vw, 49px);
+      margin-bottom: 24px;
+    }
+
+    .thankyou p {
+      color: #c8c8c8;
+      font-size: 15px;
+      line-height: 1.9;
+      margin-bottom: 17px;
+    }
+
+    .thankyou .signature {
+      color: var(--pink-light);
+      font-weight: 600;
+      margin-top: 25px;
+      margin-bottom: 0;
+    }
+
+    .small-heart {
+      display: inline-block;
+      color: var(--pink);
+      animation: heartbeat 1.7s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      12% { transform: scale(1.18); }
+      24% { transform: scale(1); }
+    }
+
+    .bottom-line {
+      text-align: center;
+      color: #666;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 24px;
+    }
+
+    .bottom-line span {
+      color: var(--pink);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 15px;
+        align-items: flex-start;
+        padding-top: 28px;
+        padding-bottom: 28px;
+      }
+
+      .card {
+        padding: 30px 23px;
+        border-radius: 17px;
+      }
+
+      .description {
+        font-size: 15px;
+      }
+
+      .review-footer {
+        align-items: stretch;
+      }
+
+      .review-footer .button {
+        width: 100%;
+      }
+
+      .back-button {
+        order: 2;
+        align-self: flex-start;
+      }
+
+      .stars {
+        gap: 8px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <!-- LANDING SCREEN -->
+    <section class="screen active" id="welcomeScreen">
+      <div class="card">
+
+        <div class="eyebrow">A little something for you</div>
+
+        <h1>WELCOME,<br><span>BHUMI.</span></h1>
+
+        <p class="formal">(Bhumika, if we're being formal.)</p>
+
+        <p class="description">
+          An extremely unofficial review platform created by Yash OP
+          to investigate one very important matter.
+        </p>
+
+        <button class="button" id="proceedButton" type="button">
+          Proceed <span class="arrow">↗</span>
+        </button>
+
+        <p class="host">Hosted by <strong>Yash OP</strong></p>
+      </div>
+    </section>
+
+
+    <!-- REVIEW SCREEN -->
+    <section class="screen" id="reviewScreen">
+      <div class="card">
+
+        <div class="eyebrow">Your honest opinion</div>
+
+        <div class="review-header">
+          <h2>Yaar, apna review toh diya hi nahi...</h2>
+          <p>
+            Mere se baat karke kaisa laga aapko?
+            Be honest. I can take it. Probably.
+          </p>
+        </div>
+
+        <form id="reviewForm">
+
+          <div class="rating-section">
+            <label class="field-label">Rate your experience</label>
+
+            <div class="stars" role="group" aria-label="Choose a rating">
+              <button class="star" type="button" data-rating="1" aria-label="1 star">★</button>
+              <button class="star" type="button" data-rating="2" aria-label="2 stars">★</button>
+              <button class="star" type="button" data-rating="3" aria-label="3 stars">★</button>
+              <button class="star" type="button" data-rating="4" aria-label="4 stars">★</button>
+              <button class="star" type="button" data-rating="5" aria-label="5 stars">★</button>
+            </div>
+
+            <p class="rating-text" id="ratingText">Tap a star to rate</p>
+          </div>
+
+          <div class="feedback-section">
+            <label class="field-label" for="feedback">
+              Kuch kehna hai? 👀
+            </label>
+
+            <textarea
+              id="feedback"
+              name="feedback"
+              minlength="2"
+              maxlength="1000"
+              placeholder="Write whatever comes to your mind..."
+              required
+            ></textarea>
+
+            <p class="form-note">
+              No pressure. Just write whatever you genuinely feel.
+            </p>
+          </div>
+
+          <p class="error-message" id="errorMessage" role="alert"></p>
+
+          <div class="review-footer">
+            <button class="back-button" type="button" id="backButton">
+              ← Go back
+            </button>
+
+            <button class="button" type="submit" id="submitButton">
+              Submit review <span class="arrow">↗</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+
+    <!-- THANK YOU SCREEN -->
+    <section class="screen" id="thankyouScreen">
+      <div class="card thankyou">
+
+        <div class="success-icon">♡</div>
+
+        <div class="eyebrow">A little message for you</div>
+
+        <h2>Thank you, Bhumi.</h2>
+
+        <p>
+          I genuinely love sharing pictures and having random conversations
+          with you. And I truly believe you'll get to experience all the things
+          you've always wanted to do.
+        </p>
+
+        <p>
+          I hope you get to explore new places, make beautiful memories,
+          learn everything you're curious about, and do all those little
+          things that make you happy.
+        </p>
+
+        <p>
+          Keep being yourself, keep dreaming, and don't let anything stop you
+          from experiencing the things you love.
+        </p>
+
+        <p>
+          And thank you for being a part of my random conversations and little
+          moments. They genuinely mean a lot to me.
+        </p>
+
+        <p class="signature">
+          Loveya !!! <span class="small-heart">♥</span> ZUPPPP
+        </p>
+
+      </div>
+    </section>
+
+    <p class="bottom-line">MADE WITH <span>♡</span> BY YASH OP</p>
+
+  </main>
+
+
+  <!-- Hidden iframe used to submit the form without leaving this page -->
+  <iframe
+    name="submissionFrame"
+    id="submissionFrame"
+    title="Review submission"
+    style="display:none"
+  ></iframe>
+
+
+  <script>
+    // Your deployed Google Apps Script web app URL
+    const SCRIPT_URL =
+      "https://script.google.com/macros/s/AKfycbwQKCzlTYk_InkudC8us_fnFFgdKpNgOjuygCtP0xW12EMlaQWOybnffBr6uvacNr5o/exec";
+
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const reviewScreen = document.getElementById("reviewScreen");
+    const thankyouScreen = document.getElementById("thankyouScreen");
+
+    const proceedButton = document.getElementById("proceedButton");
+    const backButton = document.getElementById("backButton");
+
+    const reviewForm = document.getElementById("reviewForm");
+    const feedbackInput = document.getElementById("feedback");
+    const submitButton = document.getElementById("submitButton");
+
+    const ratingText = document.getElementById("ratingText");
+    const errorMessage = document.getElementById("errorMessage");
+    const stars = document.querySelectorAll(".star");
+
+    const submissionFrame = document.getElementById("submissionFrame");
+
+    let selectedRating = 0;
+    let isSubmitting = false;
+    let submissionStarted = false;
+
+    const ratingMessages = {
+      1: "Ouch. I'll try to recover from this. 😭",
+      2: "Noted. Room for improvement, apparently.",
+      3: "Decent. I'll take that.",
+      4: "Pretty good? I'll take it! 😊",
+      5: "Five stars? You're making me smile. 💗"
+    };
+
+
+    // Switch between screens
+    function showScreen(screen) {
+      document.querySelectorAll(".screen").forEach(section => {
+        section.classList.remove("active");
+      });
+
+      screen.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+
+    // Landing page button
+    proceedButton.addEventListener("click", () => {
+      showScreen(reviewScreen);
+    });
+
+
+    // Back button
+    backButton.addEventListener("click", () => {
+      showScreen(welcomeScreen);
+    });
+
+
+    // Star rating selection
+    stars.forEach(star => {
+      star.addEventListener("click", () => {
+        selectedRating = Number(star.dataset.rating);
+
+        stars.forEach(item => {
+          const value = Number(item.dataset.rating);
+          item.classList.toggle("selected", value <= selectedRating);
+        });
+
+        ratingText.textContent = ratingMessages[selectedRating];
+        errorMessage.classList.remove("visible");
+      });
+    });
+
+
+    // Show an error message
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add("visible");
+    }
+
+
+    // Form submission
+    reviewForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (isSubmitting) return;
+
+      const feedback = feedbackInput.value.trim();
+
+      if (selectedRating < 1 || selectedRating > 5) {
+        showError("Pehle rating toh select karo. ⭐");
+        return;
+      }
+
+      if (feedback.length < 2) {
+        showError("Thoda sa feedback toh likho. 😊");
+        feedbackInput.focus();
+        return;
+      }
+
+      if (feedback.length > 1000) {
+        showError("Feedback 1000 characters se kam rakho.");
+        return;
+      }
+
+      isSubmitting = true;
+      submissionStarted = false;
+
+      submitButton.disabled = true;
+      submitButton.innerHTML = "Submitting...";
+
+      errorMessage.classList.remove("visible");
+
+      // Create a hidden POST form
+      const hiddenForm = document.createElement("form");
+
+      hiddenForm.method = "POST";
+      hiddenForm.action = SCRIPT_URL;
+      hiddenForm.target = "submissionFrame";
+      hiddenForm.style.display = "none";
+
+      // Rating field
+      const ratingField = document.createElement("input");
+      ratingField.type = "hidden";
+      ratingField.name = "rating";
+      ratingField.value = String(selectedRating);
+
+      // Feedback field
+      const feedbackField = document.createElement("input");
+      feedbackField.type = "hidden";
+      feedbackField.name = "feedback";
+      feedbackField.value = feedback;
+
+      hiddenForm.appendChild(ratingField);
+      hiddenForm.appendChild(feedbackField);
+
+      document.body.appendChild(hiddenForm);
+
+      // When the iframe loads after submission, show the final screen.
+      // Cross-origin restrictions mean the page cannot inspect the
+      // Apps Script response to confirm that the row was actually saved.
+      submissionFrame.onload = () => {
+        if (!submissionStarted) return;
+
+        submissionStarted = false;
+        isSubmitting = false;
+
+        hiddenForm.remove();
+
+        showScreen(thankyouScreen);
+      };
+
+      submissionStarted = true;
+      hiddenForm.submit();
+
+      // If the iframe does not load, avoid leaving the button stuck.
+      setTimeout(() => {
+        if (!isSubmitting) return;
+
+        isSubmitting = false;
+        submissionStarted = false;
+
+        hiddenForm.remove();
+
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Submit review <span class="arrow">↗</span>';
+
+        showError(
+          "Submission confirm nahi ho paayi. Internet connection check karke dobara try karo."
+        );
+      }, 15000);
+    });
+  </script>
+
+</body>
+</html>
